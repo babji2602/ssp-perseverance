@@ -1,0 +1,38 @@
+from ursina import *
+
+app = Ursina()
+
+# Set up the environment
+Sky()
+road = Entity(model='cube', color=color.gray, scale=(10, 1, 100), position=(0, -0.5, 50))
+car = Entity(model='cube', color=color.red, scale=(1, 0.5, 2), position=(0, 0, 0))
+
+camera.parent = car
+camera.position = (0, 5, -15)
+camera.rotation_x = 20
+
+# Car movement parameters
+car_speed = 5
+turn_speed = 100
+
+def update():
+    global car_speed
+    # Forward movement
+    car.z += time.dt * car_speed
+
+    # Steering
+    if held_keys['a']:
+        car.x -= time.dt * 5
+    if held_keys['d']:
+        car.x += time.dt * 5
+
+    # Accelerate / Brake
+    if held_keys['w']:
+        car_speed += 0.1
+    if held_keys['s']:
+        car_speed -= 0.1
+
+    # Clamp speed
+    car_speed = max(0, min(car_speed, 20))
+
+app.run()
